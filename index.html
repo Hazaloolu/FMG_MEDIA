@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zync Media - Your Social Media Service Firm</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* Prevent horizontal scroll due to off-screen menu */
+        }
+
+        /* Prevent scrolling when mobile menu is open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* Minimalist Fixed Header */
+        header {
+            background-color: #004C99; /* Zync Project Blue */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 2rem; /* Adjusted padding */
+        }
+
+        .logo {
+            width: 10%; /* Default desktop width */
+            padding: 5px 0; /* Adjust padding for logo */
+        }
+
+        .logo img{
+            width: 70%; /* Scale image within its container */
+            height: auto;
+            display: block;
+        }
+
+        /* Desktop Navigation */
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: #fff; /* White links for visibility on blue header */
+            text-decoration: none;
+            margin-left: 1.5rem; /* Increased spacing for desktop links */
+            transition: color 0.3s ease;
+            font-weight: 600; /* Make desktop links slightly bolder */
+            font-size: 1.05rem;
+        }
+
+        .main-nav a:hover {
+            color: #FFD700; /* Bright Yellow/Gold hover */
+        }
+
+        /* Mobile Menu Button (Hamburger) */
+        .menu-toggle {
+            display: none; /* Hidden by default on larger screens */
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1001; /* Ensure it's above everything */
+            margin-right: 0.5rem; /* Space from right edge */
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: #fff; /* White bars for hamburger */
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Animation for hamburger to 'X' */
+        .menu-toggle.open span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .menu-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.open span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        /* Mobile Navigation (off-screen by default) */
+        .mobile-nav {
+            display: flex; /* Always flex so inner links stack */
+            flex-direction: column;
+            background-color: #004C99; /* Same as header background */
+            position: fixed;
+            top: 0;
+            right: -100%; /* Start off-screen to the right */
+            width: 75%; /* Wider for mobile */
+            max-width: 350px; /* Cap mobile menu width */
+            height: 100%;
+            padding-top: 80px; /* Space for fixed header/logo */
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease-in-out, visibility 0.3s, opacity 0.3s; /* Smooth transition */
+            z-index: 999; /* Below toggle button */
+            align-items: center;
+            visibility: hidden; /* Hidden for transition */
+            opacity: 0; /* Hidden for transition */
+        }
+
+        .mobile-nav.open {
+            right: 0; /* Slide in */
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .mobile-nav a {
+            color: #fff; /* White links for mobile menu */
+            text-decoration: none;
+            padding: 1.2rem 0; /* More vertical padding for mobile links */
+            width: 90%; /* Make links take up more space */
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 1.1rem; /* Slightly larger font for mobile links */
+        }
+
+        .mobile-nav a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+        }
+
+
+        /* Hero Section */
+        .hero {
+            background-color: #E0F7FA; /* Light Teal/Aqua background */
+            padding: 100px 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 600px;
+            padding-top: 150px; /* Account for fixed header */
+            position: relative;
+            overflow: hidden; /* For any potential background animations */
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 2; /* Ensure content is above image */
+            position: relative;
+        }
+
+        .hero-image-container {
+            max-width: 500px; /* Adjust size as needed */
+            margin: 2rem 0; /* Space between content and image */
+            z-index: 1;
+        }
+
+        .hero-image {
+            width: 100%; /* Ensure image scales */
+            height: auto;
+            display: block;
+            animation: fadeIn 1s ease-out; /* Basic entrance animation */
+        }
+
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem; /* Larger font for impact */
+            color: #2C3E50; /* Charcoal Grey */
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            animation: slideInFromLeft 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-button {
+            background-color: #FFD700; /* Bright Yellow/Gold */
+            color: #2C3E50; /* Charcoal Grey */
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: inline-block;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .hero-button:hover {
+            background-color: #e6c000;
+            transform: translateY(-3px);
+        }
+
+        /* Sections General Styles */
+        .section {
+            padding: 80px 2rem;
+            text-align: center;
+            opacity: 0; /* Hidden by default for scroll animations */
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            color: #00C6B8; /* Teal/Aqua */
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        /* Services Section */
+        .services {
+            background-color: #F5F7FA; /* Light Cool Grey */
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .service-item {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-item h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #2C3E50;
+            margin-top: 1rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .service-item p {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .service-icon {
+            color: #00C6B8;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .service-item:hover .service-icon {
+            transform: scale(1.1);
+        }
+
+        /* Why Choose Us Section */
+        .why-choose-us {
+            background-color: #fff;
+        }
+
+        .why-choose-us-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            text-align: left;
+            align-items: center;
+        }
+
+        .why-choose-us-text {
+            padding-right: 2rem;
+        }
+
+        .why-choose-us-text h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #2C3E50;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-choose-us-text ul {
+            list-style: none;
+            padding: 0;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .why-choose-us-text ul li {
+            margin-bottom: 1.2rem;
+            position: relative;
+            padding-left: 2rem;
+            line-height: 1.4;
+        }
+
+        .why-choose-us-text ul li:before {
+            content: "\f00c"; /* Font Awesome checkmark icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #00C6B8; /* Teal/Aqua */
+            font-size: 1.2rem;
+        }
+
+        .why-choose-us-image-container {
+            text-align: center;
+        }
+
+        .why-choose-us-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+
+        .why-choose-us-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: #E8F8F7; /* Soft Mint Cream */
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .testimonial-card {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: left;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px; /* Ensure consistent height */
+        }
+
+        .testimonial-card i.fas.fa-quote-left {
+            color: #FFD700;
+            font-size: 2.5rem;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            opacity: 0.2;
+        }
+
+        .testimonial-quote {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            z-index: 1;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #2C3E50;
+            font-size: 1rem;
+            margin-top: auto; /* Pushes to bottom */
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: #2C3E50; /* Charcoal Grey */
+            color: #fff;
+        }
+
+        .contact-title {
+            color: #FFD700; /* Bright Yellow/Gold */
+            font-weight: 700;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            text-align: left;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #eee;
+            font-weight: 600;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 1rem;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #444;
+            color: #eee;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: #00C6B8;
+        }
+
+        .contact-form button {
+            background-color: #FFD700;
+            color: #222;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .contact-form button:hover {
+            background-color: #e6c000;
+            transform: translateY(-3px);
+        }
+
+        .contact-info {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info a {
+            color: #eee;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: #FFD700;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #aaa;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        footer .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            color: #00C6B8;
+        }
+
+        .social-icons a {
+            color: #aaa;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #FFD700;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            .why-choose-us-content {
+                grid-template-columns: 1fr;
+            }
+            .why-choose-us-image-container {
+                order: -1; /* Image appears above text on smaller screens */
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 1.5rem; /* Adjust padding for smaller screens */
+            }
+
+            .main-nav {
+                display: none; /* Hide desktop nav on small screens */
+            }
+
+            .menu-toggle {
+                display: flex; /* Show hamburger on small screens */
+            }
+
+            .logo {
+                width: 15%; /* Adjust logo size for mobile header */
+            }
+
+            .hero {
+                padding-top: 120px; /* Adjust for potentially smaller header height */
+                min-height: auto;
+                padding-left: 1.5rem; /* Adjust horizontal padding */
+                padding-right: 1.5rem;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 60px 1.5rem; /* Adjust section padding */
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .services-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-choose-us-text {
+                padding-right: 0; /* Remove extra padding */
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem 1.5rem; /* Adjust footer padding */
+            }
+            footer .footer-links {
+                margin-top: 1rem;
+                display: flex; /* Make footer links flex to spread out */
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            footer .footer-links a {
+                margin: 0 0.7rem; /* Adjust spacing for mobile footer links */
+            }
+            .social-icons {
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 0.5rem; /* Even tighter header on very small screens */
+            }
+            .logo {
+                width: 25%; /* Further adjust logo size */
+            }
+            .hero-image-container {
+                max-width: 90%; /* Allow image to be larger on smaller phones */
+            }
+            .hero-title {
+                font-size: 1.6rem;
+            }
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            .hero-button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .section {
+                padding: 40px 1rem; /* Smaller section padding */
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .service-item, .testimonial-card {
+                padding: 20px;
+            }
+            .contact-form {
+                padding: 0 1rem;
+            }
+            .mobile-nav {
+                width: 85%; /* Slightly wider mobile menu on very small screens */
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header>
+        <div class="logo"><img src="images/logo2.png" alt="FMG Media Logo" srcset=""></div>
+
+        <nav class="main-nav">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="menu-toggle" id="mobile-menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="mobile-nav" id="mobile-nav-links">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Elevate Your Brand with Strategic Social Media.</h1>
+            <p class="hero-subtitle">We craft data-driven social media strategies and compelling content to connect you with your audience and drive real business growth.</p>
+            <a href="#contact" class="hero-button">Request a Free Consultation</a>
+        </div>
+        <div class="hero-image-container">
+            <img src="images/hero.png" alt="Social Media Management" class="hero-image">
+        </div>
+    </section>
+
+    <section class="section services" id="services">
+        <h2 class="section-title">Our Comprehensive Services</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <i class="fas fa-bullhorn service-icon"></i>
+                <h3>Social Media Strategy</h3>
+                <p>Developing bespoke strategies tailored to your brand's unique goals, audience, and industry trends.</p>
+            </div>
+            <div class="service-item">
+                <i class="fas fa-pencil-alt service-icon"></i>
+                <h3>Content Creation</h3>
+                <p>Crafting engaging, high-quality visual and written content that resonates with your target audience.</p>
+            </div>
+            <div class="service-item">
+                <i class="fas fa-chart-line service-icon"></i>
+                <h3>Paid Social Campaigns</h3>
+                <p>Designing and managing targeted ad campaigns across platforms to maximize reach and ROI.</p>
+            </div>
+            <div class="service-item">
+                <i class="fas fa-comments service-icon"></i>
+                <h3>Community Management</h3>
+                <p>Building and nurturing a vibrant online community, fostering engagement and brand loyalty.</p>
+            </div>
+            <div class="service-item">
+                <i class="fas fa-search service-icon"></i>
+                <h3>Social Listening & Insights</h3>
+                <p>Monitoring brand mentions, industry trends, and competitor activities to inform strategy.</p>
+            </div>
+            <div class="service-item">
+                <i class="fas fa-file-invoice service-icon"></i>
+                <h3>Performance Reporting</h3>
+                <p>Providing transparent, data-driven reports to showcase progress and demonstrate value.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section why-choose-us" id="about">
+        <h2 class="section-title">Why Choose FMG?</h2>
+        <div class="why-choose-us-content">
+            <div class="why-choose-us-text">
+                <h3>Your Social Success, Our Expertise.</h3>
+                <p style="margin-bottom: 1.5rem;">At FMG, we combine creativity with analytical rigor to deliver social media solutions that truly move the needle. We believe in transparency, measurable results, and building lasting partnerships.</p>
+                <ul>
+                    <li>Data-Driven Strategies for Measurable Growth</li>
+                    <li>Highly Experienced & Dedicated Team</li>
+                    <li>Customized Solutions, Not One-Size-Fits-All</li>
+                    <li>Transparent Reporting & Clear Communication</li>
+                    <li>Commitment to Latest Trends & Innovation</li>
+                </ul>
+            </div>
+            <div class="why-choose-us-image-container">
+                <img src="" alt="Our Approach" class="why-choose-us-image">
+            </div>
+        </div>
+    </section>
+
+    
+
+    <section class="section contact" id="contact">
+        <h2 class="section-title contact-title">Ready to Grow Your Social Presence?</h2>
+        <p style="color: #eee; margin-bottom: 2rem; font-size: 1.1rem;">Let's discuss how FMG can help your brand thrive.</p>
+        <form class="contact-form">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+        <div class="contact-info">
+            <p>Or reach out directly:</p>
+            <p>Email: <a href="mailto:info@zyncmedia.com">info@FMG.com</a></p>
+            <p>Phone: <a href="tel:+1234567890">+2348092384834</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="copyright">&copy; 2025 FMG. All rights reserved.</div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for scroll-triggered animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2 // Trigger when 20% of the section is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Mobile Menu Toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileNavLinks = document.getElementById('mobile-nav-links');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileNavLinks.classList.toggle('open');
+                mobileMenuToggle.classList.toggle('open'); // Add/remove 'open' class for animation
+                document.body.classList.toggle('no-scroll'); // Optional: Prevent body scrolling when menu is open
+            });
+
+            // Close mobile menu when a link is clicked (important for UX)
+            mobileNavLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNavLinks.classList.remove('open');
+                    mobileMenuToggle.classList.remove('open');
+                    document.body.classList.remove('no-scroll');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
